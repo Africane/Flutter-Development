@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:validators/sanitizers.dart';
+import 'package:http/http.dart' as http;
 
 class ApiService{
   static const baseUrl = "https://deckofcardsapi.com/api";
@@ -21,5 +24,20 @@ class ApiService{
 
     final url = '$baseUrl/$path/$queryString';
     return Uri.parse(url);
+  }
+
+  Future <Map <String, dynamic>> get (
+    String path, {
+      Map <String, dynamic> params = const {},
+    }
+  ) async {
+    final url = _url(path, params);
+
+    final response = await http.get(url);
+    if (response.bodyBytes.isEmpty) {
+      return {};
+    }
+
+    return jsonDecode(utf8.decode(response.bodyBytes));
   }
 }
