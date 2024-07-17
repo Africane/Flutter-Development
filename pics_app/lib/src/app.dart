@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
-// create a class that will be our custom widget
-// this class must extend the 'StatelessWidget' base class
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  createState() {
+    return AppState();
+  }
+}
+
+class AppState extends State<MyApp> {
+  int counter = 0;
+
   Widget build(context) {
      return MaterialApp(
     home: Scaffold(
@@ -10,10 +16,13 @@ class MyApp extends StatelessWidget {
         title: const Text('Let\'s See some Images'),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.clear),
+        child: const Icon(Icons.add),
         onPressed: () {
-        print('Hi there!');
-      },),
+          setState(() {
+            counter += 1;
+          });
+        },
+      ),
     ),
     debugShowCheckedModeBanner: false,
   );
