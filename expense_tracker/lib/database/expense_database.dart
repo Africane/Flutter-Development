@@ -59,5 +59,4 @@ class ExpenseDatabase extends ChangeNotifier {
     // re-read from db
     await readExpenses();
   }
-
 }
