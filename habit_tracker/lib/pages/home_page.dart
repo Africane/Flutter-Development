@@ -9,11 +9,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // text controller
+  final TextEditingController textEditingController = TextEditingController();
+  
+  get textController => null;
+
+  // create new habit
+  void createNewHabit() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: TextField(
+          controller: textController,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(),
       drawer: MyDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: createNewHabit,
+        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        child: Icon(Icons.add),
+      ),
       );
   }
 }
