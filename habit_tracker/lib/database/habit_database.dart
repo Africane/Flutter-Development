@@ -100,4 +100,6 @@ class HabitDatabase extends ChangeNotifier {
   }
 
   saveFirstLaunchDate() {}
+
+  void deleteHabitName(Id id) {}
 }
