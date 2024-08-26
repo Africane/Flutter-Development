@@ -1,4 +1,9 @@
+import 'package:expense_tracker/database/expense_database.dart';
+import 'package:expense_tracker/helper/helper_functions.dart';
+import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
     const HomePage({super.key});
@@ -11,6 +16,12 @@ class _HomePageState extends State<HomePage> {
   // text controllers (to fetch expense data)
   TextEditingController nameController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   // open new expense box
   void openNewExpenseBox() {
@@ -39,7 +50,8 @@ class _HomePageState extends State<HomePage> {
       // action buttons (cancel and save)
       actions: [
         // save button
-        //_saveButton(),
+        _createNewExpenseButton(),
+
         // cancel button
         _cancelButton(),
       ],
@@ -55,6 +67,36 @@ class _HomePageState extends State<HomePage> {
         onPressed: openNewExpenseBox,
         child: const Icon(Icons.add),
         ),
+    );
+  }
+
+  // save button widget
+  Widget _createNewExpenseButton() {
+    return MaterialButton(
+      onPressed:  () async {
+      // only save if there is sth in the text field to save
+      if (
+        nameController.text.isNotEmpty && 
+        amountController.text.isNotEmpty) {
+          // pop box
+          Navigator.pop(context);
+
+          // create new expense
+          Expense newExpense = Expense(
+            name: nameController.text,
+            amount: convertStringToDouble(amountController.text),
+            date: DateTime.now(),
+          );
+
+          // save to db
+          await context.read<ExpenseDatabase>().createNewExpense(newExpense);
+
+          // clear the controllers
+          nameController.clear();
+          amountController.clear();
+      }
+    },
+    child: Text('Save'),
     );
   }
 
