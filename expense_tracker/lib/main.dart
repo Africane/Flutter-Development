@@ -1,6 +1,7 @@
 import 'package:expense_tracker/database/expense_database.dart';
-import 'package:expense_tracker/pages/home_page';
+import 'package:expense_tracker/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -8,7 +9,12 @@ void main() async {
   // initialize (start) the db
   await ExpenseDatabase.initialize();
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ExpenseDatabase(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
