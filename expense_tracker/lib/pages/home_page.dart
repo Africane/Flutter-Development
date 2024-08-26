@@ -137,50 +137,52 @@ class _HomePageState extends State<HomePage> {
           onPressed: openNewExpenseBox,
           child: const Icon(Icons.add),
         ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 250,
-              child: FutureBuilder<Map<int, double>>(
-                future: _monthlyTotalsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    final monthlyTotals = snapshot.data ?? {};
-                    List<double> monthlySummary = List.generate(monthCount,
-                        (index) => monthlyTotals[startMonth + index] ?? 0.0);
-                    return MyBarGraph(
-                      monthlySummary: monthlySummary,
-                      startMonth: startMonth,
-                    );
-                  } else {
-                    return const Center(
-                      child: Text('Loading...'),
-                    );
-                  }
-                },
+        body: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 250,
+                child: FutureBuilder<Map<int, double>>(
+                  future: _monthlyTotalsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final monthlyTotals = snapshot.data ?? {};
+                      List<double> monthlySummary = List.generate(monthCount,
+                          (index) => monthlyTotals[startMonth + index] ?? 0.0);
+                      return MyBarGraph(
+                        monthlySummary: monthlySummary,
+                        startMonth: startMonth,
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('Loading...'),
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: value.allExpense.length,
-                itemBuilder: (context, index) {
-                  Expense individualExpense = value.allExpense[index];
-                  return MyListTile(
-                    title: individualExpense.name,
-                    trailing: formatAmount(individualExpense.amount),
-                    onEditPressed: (context) => openEditBox(individualExpense),
-                    onDeletePressed: (context) => openDeleteBox(individualExpense),
-                  );
-                },
+              Expanded(
+                child: ListView.builder(
+                  itemCount: value.allExpense.length,
+                  itemBuilder: (context, index) {
+                    Expense individualExpense = value.allExpense[index];
+                    return MyListTile(
+                      title: individualExpense.name,
+                      trailing: formatAmount(individualExpense.amount),
+                      onEditPressed: (context) => openEditBox(individualExpense),
+                      onDeletePressed: (context) => openDeleteBox(individualExpense),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });
   }
 
-  // save button widget
+  // save button widget - create new expense
   Widget _createNewExpenseButton() {
     return MaterialButton(
       onPressed: () async {
@@ -192,7 +194,14 @@ class _HomePageState extends State<HomePage> {
             amount: convertStringToDouble(amountController.text),
             date: DateTime.now(),
           );
+
+          // save to db
           await context.read<ExpenseDatabase>().createNewExpense(newExpense);
+
+          // refresh graph
+          refreshGraphData();
+          
+          // clear controllers
           nameController.clear();
           amountController.clear();
         }
