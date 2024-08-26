@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    Provider.of<ExpenseDatabase>(context, listen: false).readExpenses();
     super.initState();
   }
 
@@ -62,11 +62,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<ExpenseDatabase>
+    (builder: (context, value, child) => Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: openNewExpenseBox,
         child: const Icon(Icons.add),
         ),
+        body: ListView.builder(
+          itemCount: value.allExpense.length,
+          itemBuilder: (context, index) {
+
+          // get individual expense
+          Expense individualExpense = value.allExpense[index];
+
+          // return list tile UI
+          return ListTile(
+            title: Text(individualExpense.name),
+            trailing: Text(individualExpense.amount.toString()),
+          );
+        },
+        ),
+    ),
     );
   }
 
