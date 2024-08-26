@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 // to generate isar file
 part 'expense.g.dart';
 
+@Collection()
 class Expense {
   Id id = Isar.autoIncrement;
   final String name;
