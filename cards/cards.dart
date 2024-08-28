@@ -11,7 +11,12 @@
  */
 
 void main(){
-  Deck();
+  var deck = Deck();
+  deck.shuffleCards();
+  //print(deck.cardsWithSuit('Diamonds'));
+  print(deck);
+  print(deck.dealCardsToPlayer(5));
+  print(deck);
 }
 
 // class reps all the cards in the deck
@@ -29,6 +34,28 @@ class Deck{
       }
     }
   }
+  @override
+  String toString() => cards.toString();
+
+  // shuffle cards
+  shuffleCards() {
+    cards.shuffle();
+  }
+
+  // finding cards with a given suit
+  cardsWithSuit(String suit) {
+  return cards.where((card) => card.suit == suit).toList();
+  }
+
+
+  // deal cards to players
+  dealCardsToPlayer(int handSize) {
+    // get all the cards from the 1st to the required number
+    var hand = cards.sublist(0, handSize);
+    // get all the remaining cards and assign them to the cards list (ensures card in hand is not in deck)
+    cards = cards.sublist(handSize);
+    return hand;
+  }
 }
 
 
@@ -38,4 +65,7 @@ class Card{
   String suit;
 
   Card(this.rank, this.suit);
+
+  @override
+  String toString() => '$rank of $suit';
 }
