@@ -1,0 +1,1 @@
+This Project models an application that gets information online and displays it to the user. The app fetches images online and shows them to the user. It shows a new image each time the floating action button is pressed.
