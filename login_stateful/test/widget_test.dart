@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:login_stateful/main.dart';
 import 'package:login_stateful/src/app.dart';
 
 void main() {
