@@ -7,7 +7,8 @@ class App extends StatelessWidget {
     return const MaterialApp(
       title: 'Log Me In',
       home: Scaffold(
-        body: Text('Show a form here!'),
+        body: Center(
+          child: Text('Show a form here!')),
       ),
     );
   }
