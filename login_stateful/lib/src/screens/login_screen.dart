@@ -8,12 +8,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
+  String email = '';
+  String password = '';
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
         margin: const EdgeInsets.all(20.0),
         child: Form(
+          key: formKey,
           child: Column(
             children: [
               emailField(),
@@ -34,23 +39,46 @@ class _LoginScreenState extends State<LoginScreen> {
         labelText: 'Email Address',
         hintText: 'you@example.com',
       ),
+      validator: (String? value) {
+        // return null if valid
+        // otherwise return string with error message if invalid
+        if(!value!.contains('@')) {
+          return 'Please enter a valid email!';
+        }
+      },
+      onSaved: (String? value) {
+        email = value!;
+      },
     );
   }
   
   Widget passwordField() {
     return TextFormField(
         obscureText: true,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           labelText: 'Password',
           hintText: 'Password',
         ),
+        validator: (String? value) {
+          if (value!.length < 4) {
+            return 'Password must be at least 4 characters!';
+          }
+        },
+        onSaved: (String? value) {
+          password = value!;
+        },
       );
   }
 
   Widget submitButton() {
-    return const ElevatedButton(
-      onPressed: () {},
-      child: Text('Submit'),
+    return ElevatedButton(
+      onPressed: () {
+        if (formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          print('Time to post $email and $password to my API');
+        }
+      },
+      child: const Text('Submit'),
     );
   }
   
