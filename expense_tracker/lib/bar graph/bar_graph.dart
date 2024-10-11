@@ -17,7 +17,10 @@ class MyBarGraph extends StatefulWidget {
 }
 
 class _MyBarGraphState extends State<MyBarGraph> {
+  // this list holds the data for each bar
   List<IndividualBar> barData = [];
+  
+  get spaceBetweenBars => null;
 
   @override
   void initState() {
@@ -25,6 +28,7 @@ class _MyBarGraphState extends State<MyBarGraph> {
     initializeBarData();
   }
 
+  // initialize bar data - user our monthly summary to create a list of bars
   void initializeBarData() {
     barData = List.generate(
       widget.monthlySummary.length,
@@ -39,31 +43,47 @@ class _MyBarGraphState extends State<MyBarGraph> {
   Widget build(BuildContext context) {
     // initialize upon build
     initializeBarData();
-    
-    return BarChart(
-      BarChartData(
-        minY: 0,
-        maxY: 100,
-        gridData: const FlGridData(show: false),
-        borderData: FlBorderData(show: false),
-        titlesData: const FlTitlesData(
-          show: true,
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true,
-          getTitlesWidget: getBottomTitles,
+
+    // bar dimension sizes
+    double barWidth = 20;
+    double spaceBetween = 15;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SizedBox(
+        width: barWidth * barData.length + spaceBetweenBars * (barData.length - 1),
+        child: BarChart(
+          BarChartData(
+            minY: 0,
+            maxY: 100,
+            gridData: const FlGridData(show: false),
+            borderData: FlBorderData(show: false),
+            titlesData: const FlTitlesData(
+              show: true,
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true,
+              getTitlesWidget: getBottomTitles,
+              reservedSize: 24,
+              ),
+              ),
+              ),
+              barGroups: barData.map(
+                (data) => BarChartGroupData(
+                  x: data.x,
+                  barRods: [
+                  BarChartRodData(
+                    toY: data.y,
+                    width: 20,
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.grey.shade800,
+                  ),
+                ],
+                ),
+              ).toList(),
           ),
-          ),
-          ),
-          barGroups: barData.map(
-            (data) => BarChartGroupData(
-              x: data.x,
-              barRods: [
-              BarChartRodData(toY: data.y)
-            ],
-            ),
-          ).toList(),
+        ),
       ),
     );
   }
@@ -79,7 +99,7 @@ Widget getBottomTitles(double value, TitleMeta meta) {
     );
 
     String text;
-    switch (value.toInt()) {
+    switch (value.toInt()%12) {
       case 0:
         text = 'J';
         break;

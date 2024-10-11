@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
 
           // refresh graph
           refreshGraphData();
-          
+
           // clear controllers
           nameController.clear();
           amountController.clear();
@@ -214,9 +214,14 @@ class _HomePageState extends State<HomePage> {
   Widget _editExpenseButton(Expense expense) {
     return MaterialButton(
       onPressed: () async {
+        // save as long as at least one textfield has been changed
         if (nameController.text.isNotEmpty ||
             amountController.text.isNotEmpty) {
+
+          // pop box 
           Navigator.pop(context);
+
+          // create a new updated expense
           Expense updatedExpense = Expense(
             name: nameController.text.isNotEmpty
                 ? nameController.text
@@ -226,10 +231,17 @@ class _HomePageState extends State<HomePage> {
                 : expense.amount,
             date: DateTime.now(),
           );
+
+          // old expense id
           int existingId = expense.id;
+
+          // save to db
           await context
               .read<ExpenseDatabase>()
               .updateExpense(existingId, updatedExpense);
+
+          // refresh graph
+          refreshGraphData();
         }
       },
       child: const Text('Save'),
@@ -252,8 +264,12 @@ class _HomePageState extends State<HomePage> {
   Widget _deleteExpenseButton(int id) {
     return MaterialButton(
       onPressed: () async {
+        // pop box
         Navigator.pop(context);
+        // delete expense from db
         await context.read<ExpenseDatabase>().deleteExpense(id);
+        // refresh graph
+        refreshGraphData();
       },
       child: const Text('Delete'),
     );
